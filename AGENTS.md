@@ -10,7 +10,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project: augmentslabs.com website
 
-Static Next.js (App Router) + Tailwind v4 site, deployed on Vercel.
+Static Next.js (App Router) + Tailwind v4 site. Source is public at
+`github.com/augments-labs/augmentslabs.com`; production deploys from `main`
+on Vercel. The only secret is `GITHUB_TOKEN`, set in Vercel's environment to
+raise the GitHub API limit for the docs sync. Never commit it.
 
 - Commands: `npm run dev` (syncs docs first), `npm test` (vitest),
   `npm run lint`, `npm run build` (docs sync + next build + pagefind index).
@@ -18,10 +21,25 @@ Static Next.js (App Router) + Tailwind v4 site, deployed on Vercel.
   into `content/` and `public/synced/`. Never edit generated output; edit
   the source repo's `docs/` folder instead.
 - Project card/welcome-page data: `src/lib/projects.json`.
-- Docs logic unit tests live next to it: `src/lib/*.test.ts` (vitest).
+- Unit tests live beside the code they cover: `src/lib/*.test.ts` for the
+  docs logic and `src/components/*.test.ts` for rendering (vitest, node
+  environment; the markdown test renders the real pipeline through
+  `react-dom/server`).
+- Site copy is written by hand and must read that way. Plain sentences in
+  the user's vocabulary. No em dashes anywhere in `src/`, `scripts/`,
+  `README.md` or this file (the generated block above is the one exception).
+  Avoid stock patterns: three-item lists for rhythm, "X, not Y" reversals,
+  empty intensifiers. Say what the tool does, not what it is like.
+- Titles join with a middle dot (`Page · Project · Augments Labs`);
+  `docPageTitle` in `src/lib/docs.ts` skips a project name the doc already
+  carries.
+- Fenced code blocks in docs render through the `pre` override in
+  `src/components/markdown.tsx`, which must keep a real `<pre>` element:
+  whitespace, the `.prose pre` surface and the copy button all depend on it.
 - Design of record for the UI: `.sdlc-skills/designs/2026-08-08-augmentslabs-redesign.md`,
   revised by the `2026-08-09-site-chrome-polish*.md` series (latest v4:
   header, theme toggle, light tokens, footer removal, safe area, touch
-  targets, breadcrumbs, native back).
+  targets, breadcrumbs, native back). These live in `.sdlc-skills/`, which
+  is local and not committed; ask the owner for them if missing.
 - `CLAUDE.md` is a symlink to this file; keep them in sync by editing only
   `AGENTS.md`.
