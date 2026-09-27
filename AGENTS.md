@@ -21,6 +21,16 @@ raise the GitHub API limit for the docs sync. Never commit it.
   into `content/` and `public/synced/`. Never edit generated output; edit
   the source repo's `docs/` folder instead.
 - Project card/welcome-page data: `src/lib/projects.json`.
+- A project picks its card icon with `icon`, one name from `ICON_NAMES` in
+  `src/lib/projects.ts`; with none it gets the default. A project page shows
+  a terminal demo when the project has a `demo` entry: a transcript written
+  by hand from that project's documentation, showing only behaviour the
+  documentation describes. `validateDemo` checks its shape in the tests.
+- Motion: an element animates only inside a `MotionGate`
+  (`src/components/motion-gate.tsx`), which runs it while it is on screen,
+  the tab is visible and the visitor has not asked for reduced motion. The
+  finished state is the default, so pages are complete with no script.
+  Docs routes import none of it.
 - Unit tests live beside the code they cover: `src/lib/*.test.ts` for the
   docs logic and `src/components/*.test.ts` for rendering (vitest, node
   environment; the markdown test renders the real pipeline through
@@ -39,7 +49,9 @@ raise the GitHub API limit for the docs sync. Never commit it.
 - Design of record for the UI: `.sdlc-skills/designs/2026-08-08-augmentslabs-redesign.md`,
   revised by the `2026-08-09-site-chrome-polish*.md` series (latest v4:
   header, theme toggle, light tokens, footer removal, safe area, touch
-  targets, breadcrumbs, native back). These live in `.sdlc-skills/`, which
+  targets, breadcrumbs, native back) and by
+  `2026-09-27-motion-and-components.md` with its revision 2 (line icons,
+  terminal demo, motion rules). These live in `.sdlc-skills/`, which
   is local and not committed; ask the owner for them if missing.
 - `CLAUDE.md` is a symlink to this file; keep them in sync by editing only
   `AGENTS.md`.

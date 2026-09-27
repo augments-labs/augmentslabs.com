@@ -23,13 +23,13 @@ export function CodeBlock({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div ref={containerRef} className="group relative">
+    <div ref={containerRef} className="group relative [@media(hover:none)]:[&_pre]:pt-10">
       {children}
       <button
         type="button"
         onClick={copy}
         aria-label={copied ? "Copied" : "Copy code"}
-        className="absolute top-2 right-2 rounded-md border border-border bg-background/80 px-2 py-1 text-xs font-medium text-muted opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-accent"
+        className="absolute top-2 right-2 rounded-md border border-border bg-background/80 px-2 py-1 text-xs font-medium text-muted [@media(hover:hover)]:opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-accent"
       >
         {copied ? "Copied" : "Copy"}
       </button>

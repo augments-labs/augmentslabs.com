@@ -8,13 +8,15 @@ the augment corner from the logo.
 
 - **Routes**
   - `/`: lab homepage (thesis, principles, project cards).
-  - `/<slug>`: project welcome page (tagline, quickstart, highlights, CTAs).
+  - `/<slug>`: project welcome page (tagline, quickstart, highlights, CTAs,
+    and a terminal demo when the project has one).
   - `/<slug>/docs` + `/<slug>/docs/<page...>`: per-project documentation with
     sidebar, search (⌘K), right-rail TOC, prev/next, and "Edit this page".
   - `/docs`: index of all project docs. `/device-preview`: react-device-lab.
   - Legacy `/docs/<slug>/...` 301-redirects to `/<slug>/docs/...`.
 - **Project data** lives in `src/lib/projects.json` (tagline, quickstart,
-  highlights, repo URL). Adding a project = one JSON entry.
+  highlights, repo URL, plus an optional `icon` and `demo`). Adding a
+  project = one JSON entry.
 - **Docs are synced, not written here.** Each project keeps its docs in its
   own repo under `docs/`. `scripts/sync-docs.mjs` pulls every `docs/**/*.md`
   (→ `content/docs/<slug>/`) and image (→ `public/synced/<slug>/`) before

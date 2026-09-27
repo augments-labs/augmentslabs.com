@@ -1,0 +1,178 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.terminal {
+  background: var(--surface, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border, #333);
+  background: var(--surface, #1a1a1a);
+  color: var(--muted, #999);
+  font-size: 11px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border, #333);
+  display: inline-block;
+}
+
+.title {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--muted, #999);
+}
+
+.body {
+  padding: 12px 14px;
+  min-height: 336px;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--foreground, #e4e4e4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@property --demo-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.container {
+  --demo-t: var(--loop);
+}
+
+:global([data-motion="idle"]) .container {
+  --demo-t: 0;
+}
+
+:global([data-motion="running"]) .container,
+:global([data-motion="paused"]) .container {
+  animation: tick calc(var(--loop) * 1ms) linear infinite;
+}
+
+:global([data-motion="paused"]) .container {
+  animation-play-state: paused;
+}
+
+@keyframes tick {
+  from { --demo-t: 0; }
+  to { --demo-t: var(--loop); }
+}
+
+.line {
+  display: block;
+  opacity: clamp(0, calc((var(--demo-t) - var(--at)) / 150), 1);
+}
+
+.prompt {
+  color: var(--accent, #5ed2c4);
+}
+
+.typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: pre;
+  vertical-align: bottom;
+  max-width: calc(
+    clamp(0, calc((var(--demo-t) - var(--at)) / (var(--chars) * 60)), 1) *
+      var(--chars) * 1ch
+  );
+}
+
+.cursor {
+  display: none;
+  width: 7px;
+  height: 13px;
+  background: var(--accent, #5ed2c4);
+  vertical-align: -2px;
+}
+
+:global([data-motion="running"]) .cursor {
+  display: inline-block;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.result {
+  color: var(--foreground, #e4e4e4);
+}
+
+.result::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--accent, #5ed2c4);
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.tool {
+  color: var(--muted, #999);
+}
+
+.mode {
+  color: var(--muted, #999);
+}
+
+.question {
+  display: block;
+  border: 1px solid color-mix(in srgb, var(--muted, #999) 50%, transparent);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 6px 0 4px;
+  color: var(--foreground, #e4e4e4);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre;
+  width: max-content;
+}
+
+.question [data-chosen="true"] {
+  color: var(--accent);
+}
+
+.question div {
+  margin: 0;
+  min-height: 1.6em;
+}
+
+.caption {
+  margin-top: 8px;
+  color: var(--muted, #999);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none !important;
+    --demo-t: var(--loop) !important;
+  }
+  .cursor {
+    display: none !important;
+  }
+}

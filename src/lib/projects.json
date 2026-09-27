@@ -5,6 +5,19 @@
     "tagline": "The harness where agents are forged.",
     "language": "Rust",
     "repoUrl": "https://github.com/augments-labs/crucible-code",
+    "icon": "terminal",
+    "demo": {
+      "title": "crucible",
+      "caption": "Crucible Code stops and asks before it runs a command. Nothing runs until you answer.",
+      "alt": "A Crucible Code session in ask mode. The person asks Crucible to run the tests. Crucible stops and shows the command it wants to run, cargo test, with three answers: yes once, yes for this session, or no. The person chooses yes, once.",
+      "loopMs": 11000,
+      "lines": [
+        { "at": 200, "kind": "mode", "text": "ask mode on (shift+tab to cycle)" },
+        { "at": 600, "kind": "prompt", "text": "run the tests before I touch the parser" },
+        { "at": 3600, "kind": "question", "text": "Bash command\n\n  cargo test --workspace --all-features\n  Run the suite before touching the module\n\nThis command needs your verdict.\n\nDo you want to proceed?\n› 1. Yes, once\n  2. Yes, and don't ask again this session\n  3. No, and end the turn" },
+        { "at": 3700, "kind": "mode", "text": "  esc to cancel · ctrl+e to explain" }
+      ]
+    },
     "quickstart": {
       "label": "Build from source (Linux x86-64, glibc 2.34 or newer)",
       "code": "git clone https://github.com/augments-labs/crucible-code\ncd crucible-code\ncargo build --release\n./target/release/crucible --version"
@@ -22,6 +35,7 @@
     "tagline": "A framework to orchestrate a complex system of agents that performs real-world actions.",
     "language": "Python",
     "repoUrl": "https://github.com/augments-labs/augments-adk-python",
+    "icon": "graph",
     "quickstart": {
       "label": "Install with uv, or with plain pip",
       "code": "uv add augments-adk  # or: pip install augments-adk"
@@ -39,6 +53,7 @@
     "tagline": "Rigorous, phase-isolated SDLC skills that tether autonomous agents to real-world engineering standards.",
     "language": "Shell",
     "repoUrl": "https://github.com/augments-labs/sdlc-skills",
+    "icon": "checklist",
     "quickstart": {
       "label": "Install in Claude Code",
       "code": "/plugin marketplace add augments-labs/sdlc-skills\n/plugin install sdlc-skills@augments-labs"

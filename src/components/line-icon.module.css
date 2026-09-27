@@ -1,0 +1,61 @@
+.icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.icon :is(rect, circle, path) {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+
+:global([data-motion="idle"]) .icon :is(rect, circle, path) {
+  stroke-dashoffset: 100;
+  opacity: 0;
+}
+
+:global([data-motion="running"]) .icon :is(rect, circle, path),
+:global([data-motion="paused"]) .icon :is(rect, circle, path) {
+  animation: draw 900ms ease both;
+}
+
+:global([data-motion="paused"]) .icon :is(rect, circle, path) {
+  animation-play-state: paused;
+}
+
+@media (hover: hover) {
+  :global(.group):hover .icon :is(rect, circle, path) {
+    animation: redraw 700ms ease both;
+  }
+}
+
+:global(.group):focus-visible .icon :is(rect, circle, path),
+:global(.group):focus-within .icon :is(rect, circle, path) {
+  animation: redraw 700ms ease both;
+}
+
+@keyframes draw {
+  from { stroke-dashoffset: 100; opacity: 0; }
+  15% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes redraw {
+  from { stroke-dashoffset: 100; opacity: 0; }
+  15% { opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon :is(rect, circle, path) {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1 !important;
+  }
+}
+

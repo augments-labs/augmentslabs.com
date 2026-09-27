@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CodeBlock } from "@/components/code-block";
+import { MotionGate } from "@/components/motion-gate";
+import { TerminalDemo } from "@/components/terminal-demo";
 import { getProject, projects } from "@/lib/projects";
 
 export const dynamicParams = false;
@@ -27,12 +29,8 @@ export default async function ProjectWelcomePage({ params }: Props) {
   const project = getProject(slug);
   if (!project) notFound();
 
-  return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
-      <span hidden data-pagefind-meta={`url:/${slug}`} />
-      <Breadcrumbs
-        items={[{ label: "Home", href: "/" }, { label: project.name, current: true }]}
-      />
+  const header = (
+    <>
       <span className="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted">
         {project.language}
       </span>
@@ -59,6 +57,26 @@ export default async function ProjectWelcomePage({ params }: Props) {
           View on GitHub
         </a>
       </div>
+    </>
+  );
+
+  return (
+    <div className="mx-auto w-full max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
+      <span hidden data-pagefind-meta={`url:/${slug}`} />
+      <Breadcrumbs
+        items={[{ label: "Home", href: "/" }, { label: project.name, current: true }]}
+      />
+      {project.demo ? (
+        <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
+          <div className="min-w-0">{header}</div>
+
+          <MotionGate className="min-w-0">
+            <TerminalDemo demo={project.demo} />
+          </MotionGate>
+        </div>
+      ) : (
+        header
+      )}
 
       <section className="mt-14">
         <h2 className="text-sm font-semibold tracking-wide text-muted uppercase">

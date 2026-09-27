@@ -1,26 +1,39 @@
 import Link from "next/link";
-import { projects } from "@/lib/projects";
+import { projects, iconFor, type IconName } from "@/lib/projects";
+import { LineIcon } from "@/components/line-icon";
+import { MotionGate } from "@/components/motion-gate";
 
-const principles = [
+interface Principle {
+  title: string;
+  body: string;
+  icon: IconName;
+}
+
+const principles: Principle[] = [
   {
     title: "Human authority",
     body: "People stay responsible for the decisions that matter. Our tools make each action clearer and more deliberate, and they never hide what they do.",
+    icon: "person",
   },
   {
     title: "Understandable behavior",
     body: "You can see what a tool is doing and why, and step in whenever you need to.",
+    icon: "eye",
   },
   {
     title: "Meaningful choice",
     body: "Durable software avoids needless lock-in. You pick the systems and services you trust.",
+    icon: "fork",
   },
   {
     title: "Local ownership",
     body: "Your work and your data belong to you. We treat privacy and control as design constraints from the start.",
+    icon: "home",
   },
   {
     title: "Measured usefulness",
     body: "Reliability, performance and concrete results count for more than impressive demos or big claims.",
+    icon: "gauge",
   },
 ];
 
@@ -38,30 +51,31 @@ export default function Home() {
           attention. The person stays in command.
         </p>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-          Augments Labs is where we build them: a coding agent for the
-          terminal, a framework for systems of agents that act in the real
-          world, and a set of skills that hold autonomous agents to real
-          engineering standards.
+          Augments Labs is where we build them. Each project below has its own
+          repository and its own docs.
         </p>
       </section>
 
       <section id="projects" className="scroll-mt-20 border-t border-border py-16">
         <h2 className="text-2xl font-semibold tracking-tight">Projects</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <Link
               key={project.slug}
               href={`/${project.slug}`}
-              className="group flex flex-col rounded-xl border border-border bg-surface p-5 transition-colors hover:border-accent"
+              className="group flex flex-col rounded-xl border border-border bg-surface p-5 transition-colors hover:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent focus-visible:border-accent"
             >
               <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold group-hover:text-accent">
-                  {project.name}
-                </h3>
+                <MotionGate once>
+                  <LineIcon name={iconFor(project)} />
+                </MotionGate>
                 <span className="rounded-full border border-border px-2 py-0.5 text-xs text-muted">
                   {project.language}
                 </span>
               </div>
+              <h3 className="mt-3 font-semibold group-hover:text-accent">
+                {project.name}
+              </h3>
               <p className="mt-2 flex-1 text-sm leading-6 text-muted">
                 {project.tagline}
               </p>
@@ -77,11 +91,16 @@ export default function Home() {
         <h2 className="text-2xl font-semibold tracking-tight">What guides us</h2>
         <dl className="mt-8 grid gap-8 sm:grid-cols-2">
           {principles.map((principle) => (
-            <div key={principle.title} className="border-l-2 border-accent/60 pl-4">
-              <dt className="font-semibold">{principle.title}</dt>
-              <dd className="mt-1 text-sm leading-6 text-muted">
-                {principle.body}
-              </dd>
+            <div key={principle.title} className="flex gap-3">
+              <MotionGate once className="shrink-0 mt-0.5">
+                <LineIcon name={principle.icon} />
+              </MotionGate>
+              <div>
+                <dt className="font-semibold">{principle.title}</dt>
+                <dd className="mt-1 text-sm leading-6 text-muted">
+                  {principle.body}
+                </dd>
+              </div>
             </div>
           ))}
         </dl>
