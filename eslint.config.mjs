@@ -17,6 +17,10 @@ const eslintConfig = defineConfig([
     "public/synced/**",
     "public/.synced-tmp/**",
     "public/pagefind/**",
+    // Local tool folders, both git-ignored: worktrees hold their own build
+    // output, and .sdlc-skills holds design and evidence files.
+    ".worktrees/**",
+    ".sdlc-skills/**",
   ]),
 ]);
 
