@@ -11,9 +11,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Project: augmentslabs.com website
 
 Static Next.js (App Router) + Tailwind v4 site. Source is public at
-`github.com/augments-labs/augmentslabs.com`; production deploys from `main`
-on Vercel. The only secret is `GITHUB_TOKEN`, set in Vercel's environment to
-raise the GitHub API limit for the docs sync. Never commit it.
+`github.com/augments-labs/augmentslabs.com`. The only secret is
+`GITHUB_TOKEN`, read from the environment to raise the GitHub API limit for
+the docs sync. Never commit it.
 
 - Commands: `npm run dev` (syncs docs first), `npm test` (vitest),
   `npm run lint`, `npm run build` (docs sync + next build + pagefind index).

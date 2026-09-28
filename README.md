@@ -1,8 +1,8 @@
 # augmentslabs.com
 
 The Augments Labs website. Static site built with Next.js (App Router) and
-Tailwind CSS, deployed on Vercel. Dark-first, teal-accented, one signature:
-the augment corner from the logo.
+Tailwind CSS. Dark-first, teal-accented, one signature: the augment corner
+from the logo.
 
 ## How it works
 
@@ -20,11 +20,10 @@ the augment corner from the logo.
 - **Docs are synced, not written here.** Each project keeps its docs in its
   own repo under `docs/`. `scripts/sync-docs.mjs` pulls every `docs/**/*.md`
   (→ `content/docs/<slug>/`) and image (→ `public/synced/<slug>/`) before
-  `next dev` and `next build` (npm pre-hooks, also on Vercel). `content/` and
-  `public/synced/` are gitignored and regenerated every run. Sync swaps via a
-  temp dir; on failure (e.g. rate limit) it falls back to the previous
-  snapshot. Set `GITHUB_TOKEN` to raise the API limit (recommended as a
-  Vercel env var).
+  `next dev` and `next build` (npm pre-hooks). `content/` and `public/synced/`
+  are gitignored and regenerated every run. Sync swaps via a temp dir; on
+  failure (e.g. rate limit) it falls back to the previous snapshot. Set
+  `GITHUB_TOKEN` to raise the API limit.
 - **Markdown pipeline** (`src/components/markdown.tsx`): react-markdown
   `MarkdownAsync` + GFM + Shiki (rehype-pretty-code, dual light/dark) +
   heading ids/autolinks. Relative `.md` links and images are rewritten onto
@@ -47,13 +46,6 @@ npm run test:watch # vitest watch mode
 npm run lint
 npm run build      # sync + next build + pagefind index
 ```
-
-## Deploy
-
-Import the repo into Vercel. The build command is the standard `npm run build`
-(prebuild sync and postbuild Pagefind run automatically). Add `GITHUB_TOKEN`
-in the project env vars, and attach `augmentslabs.com` in the domain
-settings.
 
 ## Conventions
 
