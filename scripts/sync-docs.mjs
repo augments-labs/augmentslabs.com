@@ -4,8 +4,7 @@
  *   - images  (docs/**.(svg...)) -> public/synced/<slug>/  (served statically)
  * plus .meta.json per project (default branch, drives "Edit this page").
  *
- * Runs automatically before `next dev` and `next build` via npm pre-hooks,
- * both locally and on Vercel.
+ * Runs automatically before `next dev` and `next build` via npm pre-hooks.
  *
  * The source of truth for documentation is each project's own GitHub repo.
  * Never edit content/ or public/synced/ by hand; both are regenerated on
@@ -13,7 +12,7 @@
  * failure (e.g. API rate limit) keeps the previous snapshot if one exists.
  *
  * Optional: set GITHUB_TOKEN to raise the GitHub API rate limit (60 req/h
- * unauthenticated). Recommended on Vercel: add GITHUB_TOKEN as an env var.
+ * unauthenticated).
  */
 import { mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
