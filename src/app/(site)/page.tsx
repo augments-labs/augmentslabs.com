@@ -12,27 +12,27 @@ interface Principle {
 const principles: Principle[] = [
   {
     title: "Human authority",
-    body: "People stay responsible for the decisions that matter. Our tools make each action clearer and more deliberate, and they never hide what they do.",
+    body: "A tool from this lab carries out what it was asked and leaves the decisions that matter to the person using it. It never acts on its own behalf.",
     icon: "person",
   },
   {
     title: "Understandable behavior",
-    body: "You can see what a tool is doing and why, and step in whenever you need to.",
+    body: "You can see what a tool is doing and why at every step. If it goes somewhere you did not expect, you can stop it and take over.",
     icon: "eye",
   },
   {
     title: "Meaningful choice",
-    body: "Durable software avoids needless lock-in. You pick the systems and services you trust.",
+    body: "Each tool works with the models, agents and services you already use. Nothing here ties you to one provider, and you can swap a part out when a better one comes along.",
     icon: "fork",
   },
   {
     title: "Local ownership",
-    body: "Your work and your data belong to you. We treat privacy and control as design constraints from the start.",
+    body: "A tool from this lab runs where you run it, on your machine or in your own environment. Your work and your data stay with you.",
     icon: "home",
   },
   {
     title: "Measured usefulness",
-    body: "Reliability, performance and concrete results count for more than impressive demos or big claims.",
+    body: "A tool earns its place by what it does for the person using it. Finished work and fewer mistakes count for more than an impressive demo.",
     icon: "gauge",
   },
 ];
