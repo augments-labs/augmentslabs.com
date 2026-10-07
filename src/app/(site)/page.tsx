@@ -12,7 +12,7 @@ interface Principle {
 const principles: Principle[] = [
   {
     title: "Human authority",
-    body: "People stay responsible for the decisions that matter. Our tools make each action clearer and more deliberate, and they never hide what they do.",
+    body: "People stay responsible for the decisions that matter. A tool from this lab makes each action clearer and more deliberate, and it never hides what it does.",
     icon: "person",
   },
   {
@@ -22,17 +22,17 @@ const principles: Principle[] = [
   },
   {
     title: "Meaningful choice",
-    body: "Durable software avoids needless lock-in. You pick the systems and services you trust.",
+    body: "A tool that lasts avoids needless lock-in. You pick the systems and services you trust.",
     icon: "fork",
   },
   {
     title: "Local ownership",
-    body: "Your work and your data belong to you. We treat privacy and control as design constraints from the start.",
+    body: "Your work and your data belong to you. Privacy and control are design constraints from the first commit.",
     icon: "home",
   },
   {
     title: "Measured usefulness",
-    body: "Reliability, performance and concrete results count for more than impressive demos or big claims.",
+    body: "A tool earns its place by what it does for the person using it. Reliability and concrete results count for more than impressive demos.",
     icon: "gauge",
   },
 ];
@@ -89,6 +89,10 @@ export default function Home() {
 
       <section className="border-t border-border py-16">
         <h2 className="text-2xl font-semibold tracking-tight">What guides us</h2>
+        <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
+          Augments Labs is a lab. It exists to build tools that extend what a
+          person can do, and every project follows the same rules.
+        </p>
         <dl className="mt-8 grid gap-8 sm:grid-cols-2">
           {principles.map((principle) => (
             <div key={principle.title} className="flex gap-3">
