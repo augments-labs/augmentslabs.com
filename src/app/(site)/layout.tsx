@@ -11,7 +11,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       >
         <div className="safe-x mx-auto flex w-full max-w-5xl items-center justify-between py-3">
           <Link href="/" aria-label="Augments Labs home">
-            <Logo className="h-8 sm:h-14" />
+            <Logo className="h-9 sm:h-14" />
           </Link>
           <div className="flex items-center gap-2.5 sm:gap-3">
             <Link

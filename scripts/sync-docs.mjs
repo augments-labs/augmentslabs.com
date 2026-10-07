@@ -2,8 +2,7 @@
  * Syncs the docs/ folder of every project repo in the augments-labs org:
  *   - markdown (docs/**.md)      -> content/docs/<slug>/   (rendered as pages)
  *   - images  (docs/**.(svg...)) -> public/synced/<slug>/  (served statically)
- * plus .meta.json per project (default branch, drives "Edit this page")
- * and public/synced/manifest.json, which records the docs commit each
+ * plus public/synced/manifest.json, which records the docs commit each
  * project was synced from. The deployed copy of that manifest lets the
  * docs-refresh workflow tell whether a rebuild is worth it.
  *
@@ -65,10 +64,6 @@ async function syncProject(project) {
 
   const projectDir = path.join(TMP_CONTENT, project.slug);
   await mkdir(projectDir, { recursive: true });
-  await writeFile(
-    path.join(projectDir, ".meta.json"),
-    JSON.stringify({ branch }),
-  );
   await Promise.all([
     ...docs.map((f) => download(project, branch, f.path, TMP_CONTENT)),
     ...images.map((f) => download(project, branch, f.path, TMP_ASSETS)),

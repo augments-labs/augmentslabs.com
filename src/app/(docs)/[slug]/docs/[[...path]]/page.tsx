@@ -14,7 +14,6 @@ import {
   getDocContent,
   getProjectDocRoutes,
   getProjectDocTree,
-  getRepoMeta,
 } from "@/lib/docs";
 import { getProject, projects } from "@/lib/projects";
 
@@ -69,10 +68,9 @@ export default async function DocPage({ params }: Props) {
   const doc = await getDocContent(slug, docPath);
   if (!doc && docPath.length > 0) notFound();
 
-  const [tree, routes, repoMeta] = await Promise.all([
+  const [tree, routes] = await Promise.all([
     getProjectDocTree(slug),
     getProjectDocRoutes(slug),
-    getRepoMeta(slug),
   ]);
 
   if (!doc) {
@@ -149,10 +147,6 @@ export default async function DocPage({ params }: Props) {
     };
   });
 
-  const editUrl = repoMeta
-    ? `${project.repoUrl}/edit/${repoMeta.branch}/docs/${doc.fileRelPath.split(path.sep).join("/")}`
-    : null;
-
   const breadcrumbItems: Crumb[] = [
     { label: "Home", href: "/" },
     { label: project.name, href: `/${slug}` },
@@ -183,18 +177,6 @@ export default async function DocPage({ params }: Props) {
           <Markdown content={doc.markdown} baseSegments={baseSegments} />
         </article>
         <div data-pagefind-ignore>
-          {editUrl && (
-            <p className="mt-12 border-t border-border pt-6 text-sm">
-              <a
-                href={editUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-accent hover:underline"
-              >
-                Edit this page on GitHub
-              </a>
-            </p>
-          )}
           <PrevNext prev={prev} next={next} />
         </div>
       </div>
