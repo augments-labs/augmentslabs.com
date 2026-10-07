@@ -17,9 +17,12 @@ the docs sync. Never commit it.
 
 - Commands: `npm run dev` (syncs docs first), `npm test` (vitest),
   `npm run lint`, `npm run build` (docs sync + next build + pagefind index).
-- Branches: `dev` is the default branch and takes every pull request.
-  `main` is the branch Vercel deploys and only moves by a pull request from
-  `dev`. Both are protected and require the "Lint, test and build" check.
+- Branches: `dev` is the default branch and takes every pull request,
+  squashed. `main` is the branch Vercel deploys and only moves by a pull
+  request from `dev`, merged with a merge commit (`gh pr merge N --merge`),
+  never squashed or rebased: a squash puts copies of `dev`'s commits on
+  `main` and the next release conflicts. Both branches are protected and
+  require the "Lint, test and build" check. `RELEASING.md` has the steps.
 - Workflows in `.github/workflows/`: `ci.yml` runs lint, tests and the build
   on pull requests and pushes. `docs-refresh.yml` runs hourly, compares the
   manifest the live site serves (`/synced/manifest.json`) with the project

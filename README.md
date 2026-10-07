@@ -50,7 +50,7 @@ npm run build     # build the site the way Vercel does
 The repository has two long-lived branches. `dev` is the default branch
 and receives every pull request. `main` is the branch Vercel deploys. It
 only changes through a pull request from `dev`, so releasing is one merge.
-Both branches require the CI check to pass.
+Both branches require the CI check to pass. `RELEASING.md` has the steps.
 
 CI runs lint, the tests and a full build on every pull request and on
 every push to `dev` and `main`.
