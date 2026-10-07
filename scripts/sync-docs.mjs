@@ -2,7 +2,10 @@
  * Syncs the docs/ folder of every project repo in the augments-labs org:
  *   - markdown (docs/**.md)      -> content/docs/<slug>/   (rendered as pages)
  *   - images  (docs/**.(svg...)) -> public/synced/<slug>/  (served statically)
- * plus .meta.json per project (default branch, drives "Edit this page").
+ * plus .meta.json per project (default branch, drives "Edit this page")
+ * and public/synced/manifest.json, which records the docs commit each
+ * project was synced from. The deployed copy of that manifest lets the
+ * docs-refresh workflow tell whether a rebuild is worth it.
  *
  * Runs automatically before `next dev` and `next build` via npm pre-hooks.
  *
@@ -10,16 +13,19 @@
  * Never edit content/ or public/synced/ by hand; both are regenerated on
  * every run. Sync writes to temp dirs first and swaps on success, so a
  * failure (e.g. API rate limit) keeps the previous snapshot if one exists.
- *
- * Optional: set GITHUB_TOKEN to raise the GitHub API rate limit (60 req/h
- * unauthenticated).
  */
 import { mkdir, readdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import projects from "../src/lib/projects.json" with { type: "json" };
+import {
+  ORG,
+  defaultBranch,
+  fetchJson,
+  headers,
+  latestDocsCommit,
+} from "./github.mjs";
 
-const ORG = "augments-labs";
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CONTENT_DIR = path.join(ROOT, "content", "docs");
 const ASSETS_DIR = path.join(ROOT, "public", "synced");
@@ -28,22 +34,6 @@ const TMP_ASSETS = path.join(ROOT, "public", ".synced-tmp");
 
 const MARKDOWN_RE = /\.(md|mdx)$/i;
 const IMAGE_RE = /\.(svg|png|jpe?g|gif|webp|avif|ico)$/i;
-
-const headers = {
-  "User-Agent": "augments-labs-website",
-  ...(process.env.GITHUB_TOKEN
-    ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
-    : {}),
-};
-
-async function fetchJson(url) {
-  const res = await fetch(url, { headers });
-  if (!res.ok) {
-    const hint = res.status === 403 ? " (rate limited? set GITHUB_TOKEN)" : "";
-    throw new Error(`GitHub API returned ${res.status} for ${url}${hint}`);
-  }
-  return res.json();
-}
 
 async function download(project, branch, repoPath, destRoot) {
   const rawUrl = `https://raw.githubusercontent.com/${ORG}/${project.slug}/${branch}/${repoPath}`;
@@ -55,10 +45,8 @@ async function download(project, branch, repoPath, destRoot) {
 }
 
 async function syncProject(project) {
-  const repo = await fetchJson(
-    `https://api.github.com/repos/${ORG}/${project.slug}`,
-  );
-  const branch = repo.default_branch;
+  const branch = await defaultBranch(project.slug);
+  const commit = await latestDocsCommit(project.slug, branch);
   const tree = await fetchJson(
     `https://api.github.com/repos/${ORG}/${project.slug}/git/trees/${branch}?recursive=1`,
   );
@@ -88,6 +76,7 @@ async function syncProject(project) {
   console.log(
     `  ${project.slug}: ${docs.length} page(s), ${images.length} image(s)`,
   );
+  return { branch, commit };
 }
 
 async function hasSnapshot(dir) {
@@ -99,18 +88,20 @@ await rm(TMP_CONTENT, { recursive: true, force: true });
 await rm(TMP_ASSETS, { recursive: true, force: true });
 try {
   await mkdir(TMP_CONTENT, { recursive: true });
+  await mkdir(TMP_ASSETS, { recursive: true });
+  const manifest = {};
   for (const project of projects) {
-    await syncProject(project);
+    manifest[project.slug] = await syncProject(project);
   }
+  await writeFile(
+    path.join(TMP_ASSETS, "manifest.json"),
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
   // Success: swap the fresh snapshot in atomically-ish.
   await rm(CONTENT_DIR, { recursive: true, force: true });
   await rm(ASSETS_DIR, { recursive: true, force: true });
   await rename(TMP_CONTENT, CONTENT_DIR);
-  if (await hasSnapshot(TMP_ASSETS)) {
-    await rename(TMP_ASSETS, ASSETS_DIR);
-  } else {
-    await mkdir(ASSETS_DIR, { recursive: true });
-  }
+  await rename(TMP_ASSETS, ASSETS_DIR);
   console.log("Docs synced into content/docs/ and public/synced/");
 } catch (error) {
   await rm(TMP_CONTENT, { recursive: true, force: true });

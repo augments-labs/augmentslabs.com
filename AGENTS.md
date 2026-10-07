@@ -17,6 +17,15 @@ the docs sync. Never commit it.
 
 - Commands: `npm run dev` (syncs docs first), `npm test` (vitest),
   `npm run lint`, `npm run build` (docs sync + next build + pagefind index).
+- Branches: `dev` is the default branch and takes every pull request.
+  `main` is the branch Vercel deploys and only moves by a pull request from
+  `dev`. Both are protected and require the "Lint, test and build" check.
+- Workflows in `.github/workflows/`: `ci.yml` runs lint, tests and the build
+  on pull requests and pushes. `docs-refresh.yml` runs hourly, compares the
+  manifest the live site serves (`/synced/manifest.json`) with the project
+  repos through `scripts/docs-changed.mjs`, and calls the Vercel deploy hook
+  in the `VERCEL_DEPLOY_HOOK_URL` secret when the docs moved. GitHub API
+  helpers shared by the scripts live in `scripts/github.mjs`.
 - Docs content is SYNCED from the project repos by `scripts/sync-docs.mjs`
   into `content/` and `public/synced/`. Never edit generated output; edit
   the source repo's `docs/` folder instead.

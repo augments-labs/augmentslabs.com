@@ -1,0 +1,69 @@
+# Keeps the docs pages in step with the project repos.
+#
+# The site is static: docs are fetched at build time. This workflow checks
+# every hour whether any project's docs/ folder has a newer commit than the
+# one the live site was built from (public/synced/manifest.json) and, only
+# then, asks Vercel to rebuild through a deploy hook.
+#
+# A manual run or a `docs-updated` repository_dispatch skips the comparison
+# and always triggers a deploy.
+
+name: Docs refresh
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [docs-updated]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Rebuild when the docs changed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Compare the live manifest with the project repos
+        id: docs
+        if: github.event_name == 'schedule'
+        run: node scripts/docs-changed.mjs >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SITE_URL: https://augmentslabs.com
+
+      - name: Check that the site still builds with the new docs
+        if: github.event_name != 'schedule' || steps.docs.outputs.changed == 'true'
+        run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Trigger the Vercel deploy hook
+        if: github.event_name != 'schedule' || steps.docs.outputs.changed == 'true'
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK_URL is not set; nothing to trigger." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" > /dev/null
+          echo "Deploy triggered for: ${PROJECTS:-manual run}" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          PROJECTS: ${{ steps.docs.outputs.projects }}

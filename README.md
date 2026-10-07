@@ -23,7 +23,9 @@ from the logo.
   `next dev` and `next build` (npm pre-hooks). `content/` and `public/synced/`
   are gitignored and regenerated every run. Sync swaps via a temp dir; on
   failure (e.g. rate limit) it falls back to the previous snapshot. Set
-  `GITHUB_TOKEN` to raise the API limit.
+  `GITHUB_TOKEN` to raise the API limit. The sync also writes
+  `public/synced/manifest.json`, the docs commit each project was built
+  from, which the docs refresh workflow reads from the live site.
 - **Markdown pipeline** (`src/components/markdown.tsx`): react-markdown
   `MarkdownAsync` + GFM + Shiki (rehype-pretty-code, dual light/dark) +
   heading ids/autolinks. Relative `.md` links and images are rewritten onto
@@ -46,6 +48,30 @@ npm run test:watch # vitest watch mode
 npm run lint
 npm run build      # sync + next build + pagefind index
 ```
+
+## Branches and deployment
+
+- `dev` is the default branch. Every change is a pull request into `dev`.
+- `main` is what Vercel deploys to augmentslabs.com. It moves only through a
+  pull request from `dev`, so a release is one merge.
+- Both branches are protected: pull request required, no force push, linear
+  history, the CI check must pass.
+
+## Workflows
+
+- **CI** (`.github/workflows/ci.yml`): lint, tests and a full build on every
+  pull request and on pushes to `dev` and `main`. The build syncs the docs
+  with the workflow's own token.
+- **Docs refresh** (`.github/workflows/docs-refresh.yml`): the docs come
+  from other repos, so a docs change there does not touch this one. Every
+  hour the workflow compares the manifest the live site serves with the
+  latest docs commit of each project repo. When one differs, it rebuilds
+  once to make sure the new docs render, then calls the Vercel deploy
+  hook stored in the `VERCEL_DEPLOY_HOOK_URL` repository secret. Run it by
+  hand from the Actions tab, or send a `docs-updated` repository dispatch
+  from a project repo, to deploy without waiting for the hour.
+- **Dependabot** (`.github/dependabot.yml`): weekly pull requests into `dev`
+  for the actions and the npm dependencies, the latter grouped into one.
 
 ## Conventions
 
