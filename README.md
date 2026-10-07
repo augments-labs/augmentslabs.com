@@ -11,7 +11,7 @@ from the logo.
   - `/<slug>`: project welcome page (tagline, quickstart, highlights, CTAs,
     and a terminal demo when the project has one).
   - `/<slug>/docs` + `/<slug>/docs/<page...>`: per-project documentation with
-    sidebar, search (⌘K), right-rail TOC, prev/next, and "Edit this page".
+    sidebar, search (⌘K), right-rail TOC and prev/next.
   - `/docs`: index of all project docs. `/device-preview`: react-device-lab.
   - Legacy `/docs/<slug>/...` 301-redirects to `/<slug>/docs/...`.
 - **Project data** lives in `src/lib/projects.json` (tagline, quickstart,
