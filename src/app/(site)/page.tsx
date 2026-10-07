@@ -12,27 +12,27 @@ interface Principle {
 const principles: Principle[] = [
   {
     title: "Human authority",
-    body: "People stay responsible for the decisions that matter. A tool from this lab makes each action clearer and more deliberate, and it never hides what it does.",
+    body: "A tool from this lab carries out what it was asked and leaves the decisions that matter to the person using it. It never acts on its own behalf.",
     icon: "person",
   },
   {
     title: "Understandable behavior",
-    body: "You can see what a tool is doing and why, and step in whenever you need to.",
+    body: "You can see what a tool is doing and why at every step. If it goes somewhere you did not expect, you can stop it and take over.",
     icon: "eye",
   },
   {
     title: "Meaningful choice",
-    body: "A tool that lasts avoids needless lock-in. You pick the systems and services you trust.",
+    body: "Each tool works with the models, agents and services you already use. Nothing here ties you to one provider, and you can swap a part out when a better one comes along.",
     icon: "fork",
   },
   {
     title: "Local ownership",
-    body: "Your work and your data belong to you. Privacy and control are design constraints from the first commit.",
+    body: "A tool from this lab runs where you run it, on your machine or in your own environment. Your work and your data stay with you.",
     icon: "home",
   },
   {
     title: "Measured usefulness",
-    body: "A tool earns its place by what it does for the person using it. Reliability and concrete results count for more than impressive demos.",
+    body: "A tool earns its place by what it does for the person using it. Finished work and fewer mistakes count for more than an impressive demo.",
     icon: "gauge",
   },
 ];
@@ -89,10 +89,6 @@ export default function Home() {
 
       <section className="border-t border-border py-16">
         <h2 className="text-2xl font-semibold tracking-tight">What guides us</h2>
-        <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-          Augments Labs is a lab. It exists to build tools that extend what a
-          person can do, and every project follows the same rules.
-        </p>
         <dl className="mt-8 grid gap-8 sm:grid-cols-2">
           {principles.map((principle) => (
             <div key={principle.title} className="flex gap-3">
