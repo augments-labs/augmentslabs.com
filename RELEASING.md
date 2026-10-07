@@ -46,7 +46,10 @@ histories. After it is merged, `main` contains `dev`'s commits again.
 - `dev` requires a pull request and the "Lint, test and build" check. Pull
   requests into `dev` are squashed, and its history stays linear.
 - `main` requires a pull request and the same check. It must allow merge
-  commits, so "Require linear history" stays off for `main`.
+  commits, so "Require linear history" stays off for `main`. "Require
+  branches to be up to date before merging" stays off too: `main` holds
+  the merge commits of past releases, which `dev` never has, so `dev`
+  always looks behind `main`.
 - Only pull requests from `dev` land on `main`. Nothing else is pushed
   there, so `main` never carries a change that `dev` lacks.
 
