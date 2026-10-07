@@ -1,0 +1,68 @@
+/* Editor chrome. Motion lives in demo-motion.module.css. */
+
+.editor {
+  background: var(--surface, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border, #333);
+  background: var(--surface, #1a1a1a);
+  font-size: 11px;
+}
+
+.tab {
+  padding: 8px 14px;
+  color: var(--foreground, #e4e4e4);
+  border-right: 1px solid var(--border, #333);
+  border-bottom: 2px solid var(--accent, #5ed2c4);
+  margin-bottom: -1px;
+}
+
+/* The body shows --rows lines; a longer file slides up behind it as the
+   typing passes the last visible row, the way an editor follows the caret. */
+.body {
+  --row: 18px;
+  padding: 12px 14px 12px 0;
+  white-space: pre;
+  color: var(--foreground, #e4e4e4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: var(--row);
+  --ms-per-char: 20;
+}
+
+.viewport {
+  height: calc(var(--rows) * var(--row));
+  overflow: hidden;
+}
+
+.file {
+  transform: translateY(calc(var(--scroll-lines) * var(--row) * -1));
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+}
+
+.number {
+  flex: none;
+  width: 40px;
+  padding-right: 14px;
+  text-align: right;
+  color: var(--muted, #999);
+  user-select: none;
+}
+
+/* Token colours follow the docs: light colour inline, dark colour by var. */
+:global(.dark) .token {
+  color: var(--shiki-dark) !important;
+}

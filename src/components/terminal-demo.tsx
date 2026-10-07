@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import type { Demo, DemoLine } from "@/lib/projects";
+import motion from "./demo-motion.module.css";
 import styles from "./terminal-demo.module.css";
 
 interface TerminalDemoProps {
@@ -15,7 +16,7 @@ function renderLineContent(line: DemoLine): ReactNode {
       <>
         <span className={styles.prompt}>›</span>{" "}
         <span
-          className={styles.typing}
+          className={motion.typing}
           data-typing
           style={
             {
@@ -25,7 +26,7 @@ function renderLineContent(line: DemoLine): ReactNode {
         >
           {text}
         </span>
-        <span className={styles.cursor} />
+        <span className={motion.cursor} />
       </>
     );
   }
@@ -64,7 +65,7 @@ export function TerminalDemo({
   demo,
   className,
 }: TerminalDemoProps) {
-  const containerClasses = [styles.container, className]
+  const containerClasses = [motion.container, className]
     .filter(Boolean)
     .join(" ");
 
@@ -90,7 +91,7 @@ export function TerminalDemo({
           {demo.lines.map((line, index) => (
             <div
               key={index}
-              className={styles.line}
+              className={motion.line}
               data-line-kind={line.kind}
               style={
                 {
@@ -103,7 +104,7 @@ export function TerminalDemo({
           ))}
         </div>
       </div>
-      <figcaption className={styles.caption}>{demo.caption}</figcaption>
+      <figcaption className={motion.caption}>{demo.caption}</figcaption>
     </figure>
   );
 }

@@ -23,9 +23,12 @@ the docs sync. Never commit it.
 - Project card/welcome-page data: `src/lib/projects.json`.
 - A project picks its card icon with `icon`, one name from `ICON_NAMES` in
   `src/lib/projects.ts`; with none it gets the default. A project page shows
-  a terminal demo when the project has a `demo` entry: a transcript written
-  by hand from that project's documentation, showing only behaviour the
-  documentation describes. `validateDemo` checks its shape in the tests.
+  a demo when the project has a `demo` entry: a transcript written by hand
+  from that project's documentation, showing only behaviour the
+  documentation describes. Its `surface` picks the frame: `terminal` (the
+  default), `editor` (a source file typed line by line, coloured by shiki
+  from the project `language`) or `session` (a Claude Code conversation,
+  with no logo or mascot). `validateDemo` checks its shape in the tests.
 - Motion: an element animates only inside a `MotionGate`
   (`src/components/motion-gate.tsx`), which runs it while it is on screen,
   the tab is visible and the visitor has not asked for reduced motion. The

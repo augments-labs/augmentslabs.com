@@ -1,6 +1,19 @@
 import { renderToReadableStream } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import ProjectWelcomePage from "./page";
+
+// Every shipped project has a demo, so the no-demo path is covered by a
+// copy of Augments ADK with its demo removed.
+vi.mock("@/lib/projects", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/projects")>();
+  const noDemo = { ...actual.getProject("augments-adk-python")! };
+  delete noDemo.demo;
+  return {
+    ...actual,
+    getProject: (slug: string) =>
+      slug === "no-demo" ? noDemo : actual.getProject(slug),
+  };
+});
 
 async function renderPage(slug: string): Promise<string> {
   const element = await ProjectWelcomePage({
@@ -20,11 +33,11 @@ function extractHeaderRegion(html: string): string {
   return html.substring(navEndIndex + 6, sectionStartIndex);
 }
 
-const baselineHeaderNoDemoProject = '<span class="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted">Python</span><h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Augments ADK</h1><p class="mt-4 max-w-2xl text-lg leading-8 text-muted">A framework to orchestrate a complex system of agents that performs real-world actions.</p><div class="mt-8 flex flex-wrap gap-3"><a class="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90" href="/augments-adk-python/docs">Read the docs</a><a href="https://github.com/augments-labs/augments-adk-python" target="_blank" rel="noreferrer" class="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent">View on GitHub</a></div>';
+const baselineHeaderNoDemoProject = '<span class="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted">Python</span><h1 class="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Augments ADK</h1><p class="mt-4 max-w-2xl text-lg leading-8 text-muted">A framework to orchestrate a complex system of agents that performs real-world actions.</p><div class="mt-8 flex flex-wrap gap-3"><a class="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90" href="/no-demo/docs">Read the docs</a><a href="https://github.com/augments-labs/augments-adk-python" target="_blank" rel="noreferrer" class="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent">View on GitHub</a></div>';
 
 describe("Project Welcome Page", () => {
   it("renders markup unchanged for project without demo", async () => {
-    const html = await renderPage("augments-adk-python");
+    const html = await renderPage("no-demo");
     const headerRegion = extractHeaderRegion(html);
     expect(headerRegion).toBe(baselineHeaderNoDemoProject);
   });
@@ -63,7 +76,7 @@ describe("Project Welcome Page", () => {
   });
 
   it("no lg:grid-cols-2 or empty class for project without demo", async () => {
-    const html = await renderPage("augments-adk-python");
+    const html = await renderPage("no-demo");
     expect(html).not.toContain('lg:grid-cols-2');
     expect(html).not.toContain('class=""');
   });
@@ -76,7 +89,7 @@ describe("Project Welcome Page", () => {
   });
 
   it("renders breadcrumb and actions for project without demo", async () => {
-    const html = await renderPage("augments-adk-python");
+    const html = await renderPage("no-demo");
     expect(html).toContain("Home");
     expect(html).toContain("Read the docs");
     expect(html).toContain("View on GitHub");

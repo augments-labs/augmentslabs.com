@@ -1,0 +1,90 @@
+/* Claude Code session chrome. Motion lives in demo-motion.module.css. */
+
+.session {
+  background: var(--surface, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--foreground, #e4e4e4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border, #333);
+}
+
+.product {
+  font-weight: 700;
+}
+
+.cwd {
+  color: var(--muted, #999);
+}
+
+.body {
+  padding: 12px 14px;
+  min-height: 300px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.prompt {
+  display: flex;
+  gap: 8px;
+  padding: 2px 8px;
+  margin: 0 -8px 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--muted, #999) 18%, transparent);
+}
+
+.chevron {
+  color: var(--muted, #999);
+  flex: none;
+}
+
+.text,
+.skill {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.textDot,
+.skillDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+.textDot {
+  background: var(--foreground, #e4e4e4);
+}
+
+.skillDot {
+  background: #3fb950;
+}
+
+.callName {
+  font-weight: 700;
+}
+
+.loaded {
+  color: var(--muted, #999);
+}
+
+.note {
+  color: var(--muted, #999);
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
