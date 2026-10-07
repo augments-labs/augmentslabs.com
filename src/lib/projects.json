@@ -12,10 +12,26 @@
       "alt": "A Crucible Code session in ask mode. The person asks Crucible to run the tests. Crucible stops and shows the command it wants to run, cargo test, with three answers: yes once, yes for this session, or no. The person chooses yes, once.",
       "loopMs": 11000,
       "lines": [
-        { "at": 200, "kind": "mode", "text": "ask mode on (shift+tab to cycle)" },
-        { "at": 600, "kind": "prompt", "text": "run the tests before I touch the parser" },
-        { "at": 3600, "kind": "question", "text": "Bash command\n\n  cargo test --workspace --all-features\n  Run the suite before touching the module\n\nThis command needs your verdict.\n\nDo you want to proceed?\n› 1. Yes, once\n  2. Yes, and don't ask again this session\n  3. No, and end the turn" },
-        { "at": 3700, "kind": "mode", "text": "  esc to cancel · ctrl+e to explain" }
+        {
+          "at": 200,
+          "kind": "mode",
+          "text": "ask mode on (shift+tab to cycle)"
+        },
+        {
+          "at": 600,
+          "kind": "prompt",
+          "text": "run the tests before I touch the parser"
+        },
+        {
+          "at": 3600,
+          "kind": "question",
+          "text": "Bash command\n\n  cargo test --workspace --all-features\n  Run the suite before touching the module\n\nThis command needs your verdict.\n\nDo you want to proceed?\n› 1. Yes, once\n  2. Yes, and don't ask again this session\n  3. No, and end the turn"
+        },
+        {
+          "at": 3700,
+          "kind": "mode",
+          "text": "  esc to cancel · ctrl+e to explain"
+        }
       ]
     },
     "quickstart": {
@@ -36,6 +52,165 @@
     "language": "Python",
     "repoUrl": "https://github.com/augments-labs/augments-adk-python",
     "icon": "graph",
+    "demo": {
+      "surface": "editor",
+      "title": "agent.py",
+      "caption": "Augments ADK asks your permission callback before a tool runs. The Runner carries the context it reads, so a non-admin run never deletes anything.",
+      "alt": "A Python file open in an editor, written line by line. It imports Agent, PermissionResultAllow, PermissionResultDeny and Runner from Augments ADK, defines an async function require_admin that denies any tool whose name starts with delete_ unless the caller is an admin, with the message Admin required for deletes, and allows everything else. It builds an Agent named SecureAgent with that function as can_use_tool, then runs it with Runner.arun, the prompt Delete the staging database and a context where is_admin is False, and prints the final output.",
+      "loopMs": 26500,
+      "lines": [
+        {
+          "at": 300,
+          "kind": "code",
+          "text": "import asyncio"
+        },
+        {
+          "at": 880,
+          "kind": "code",
+          "text": ""
+        },
+        {
+          "at": 1080,
+          "kind": "code",
+          "text": "from augments.adk import ("
+        },
+        {
+          "at": 1900,
+          "kind": "code",
+          "text": "    Agent,"
+        },
+        {
+          "at": 2400,
+          "kind": "code",
+          "text": "    PermissionResultAllow,"
+        },
+        {
+          "at": 3220,
+          "kind": "code",
+          "text": "    PermissionResultDeny,"
+        },
+        {
+          "at": 4020,
+          "kind": "code",
+          "text": "    Runner,"
+        },
+        {
+          "at": 4540,
+          "kind": "code",
+          "text": ")"
+        },
+        {
+          "at": 4860,
+          "kind": "code",
+          "text": ""
+        },
+        {
+          "at": 5060,
+          "kind": "code",
+          "text": "async def require_admin(tool_name, args, ctx):"
+        },
+        {
+          "at": 6280,
+          "kind": "code",
+          "text": "    if tool_name.startswith(\"delete_\"):"
+        },
+        {
+          "at": 7360,
+          "kind": "code",
+          "text": "        context = ctx.run_context.context"
+        },
+        {
+          "at": 8480,
+          "kind": "code",
+          "text": "        if not context.get(\"is_admin\", False):"
+        },
+        {
+          "at": 9700,
+          "kind": "code",
+          "text": "            return PermissionResultDeny("
+        },
+        {
+          "at": 10800,
+          "kind": "code",
+          "text": "                message=\"Admin required for deletes\","
+        },
+        {
+          "at": 12160,
+          "kind": "code",
+          "text": "                interrupt=False,"
+        },
+        {
+          "at": 13100,
+          "kind": "code",
+          "text": "            )"
+        },
+        {
+          "at": 13660,
+          "kind": "code",
+          "text": "    return PermissionResultAllow()"
+        },
+        {
+          "at": 14640,
+          "kind": "code",
+          "text": ""
+        },
+        {
+          "at": 14840,
+          "kind": "code",
+          "text": "agent = Agent("
+        },
+        {
+          "at": 15420,
+          "kind": "code",
+          "text": "    name=\"SecureAgent\","
+        },
+        {
+          "at": 16180,
+          "kind": "code",
+          "text": "    can_use_tool=require_admin,"
+        },
+        {
+          "at": 17100,
+          "kind": "code",
+          "text": ")"
+        },
+        {
+          "at": 17420,
+          "kind": "code",
+          "text": ""
+        },
+        {
+          "at": 17620,
+          "kind": "code",
+          "text": "result = asyncio.run(Runner.arun("
+        },
+        {
+          "at": 18580,
+          "kind": "code",
+          "text": "    agent,"
+        },
+        {
+          "at": 19080,
+          "kind": "code",
+          "text": "    \"Delete the staging database\","
+        },
+        {
+          "at": 20060,
+          "kind": "code",
+          "text": "    context={\"is_admin\": False},"
+        },
+        {
+          "at": 21000,
+          "kind": "code",
+          "text": "))"
+        },
+        {
+          "at": 21340,
+          "kind": "code",
+          "text": "print(result.final_output)"
+        }
+      ]
+    },
     "quickstart": {
       "label": "Install with uv, or with plain pip",
       "code": "uv add augments-adk  # or: pip install augments-adk"
@@ -54,6 +229,45 @@
     "language": "Shell",
     "repoUrl": "https://github.com/augments-labs/sdlc-skills",
     "icon": "checklist",
+    "demo": {
+      "surface": "session",
+      "title": "~/projects/parser",
+      "caption": "SDLC Skills load the skill that fits before the agent acts. A bug goes to debugging, which reproduces it before any fix.",
+      "alt": "A Claude Code session in a project folder with SDLC Skills installed. The person reports that the parser drops the last token at the end of the input. The agent loads the debugging skill and says the cause is unknown, so it reproduces the bug before changing anything, then runs one shell command. It then loads test-driven-development and says a failing test comes before the fix.",
+      "loopMs": 13500,
+      "lines": [
+        {
+          "at": 300,
+          "kind": "prompt",
+          "text": "the parser drops the last token at EOF"
+        },
+        {
+          "at": 5000,
+          "kind": "skill",
+          "text": "sdlc-skills:debugging"
+        },
+        {
+          "at": 5700,
+          "kind": "text",
+          "text": "Using debugging: the cause is unknown, so I reproduce the bug before changing anything."
+        },
+        {
+          "at": 6600,
+          "kind": "note",
+          "text": "Ran 1 shell command"
+        },
+        {
+          "at": 7300,
+          "kind": "skill",
+          "text": "sdlc-skills:test-driven-development"
+        },
+        {
+          "at": 8000,
+          "kind": "text",
+          "text": "Using test-driven-development: a failing test comes before the fix."
+        }
+      ]
+    },
     "quickstart": {
       "label": "Install in Claude Code",
       "code": "/plugin marketplace add augments-labs/sdlc-skills\n/plugin install sdlc-skills@augments-labs"

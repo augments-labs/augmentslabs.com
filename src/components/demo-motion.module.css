@@ -1,0 +1,94 @@
+/* Shared by every demo surface: the loop clock, line reveal, typing and
+   the finished state under reduced motion. The surface modules hold the
+   frame chrome. */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+@property --demo-t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.container {
+  --demo-t: var(--loop);
+}
+
+:global([data-motion="idle"]) .container {
+  --demo-t: 0;
+}
+
+:global([data-motion="running"]) .container,
+:global([data-motion="paused"]) .container {
+  animation: tick calc(var(--loop) * 1ms) linear infinite;
+}
+
+:global([data-motion="paused"]) .container {
+  animation-play-state: paused;
+}
+
+@keyframes tick {
+  from { --demo-t: 0; }
+  to { --demo-t: var(--loop); }
+}
+
+.line {
+  display: block;
+  opacity: clamp(0, calc((var(--demo-t) - var(--at)) / 150), 1);
+}
+
+.typing {
+  display: inline-block;
+  overflow: hidden;
+  white-space: pre;
+  vertical-align: bottom;
+  max-width: calc(
+    clamp(
+        0,
+        calc(
+          (var(--demo-t) - var(--at)) /
+            (var(--chars) * var(--ms-per-char, 60))
+        ),
+        1
+      ) *
+      var(--chars) * 1ch
+  );
+}
+
+.cursor {
+  display: none;
+  width: 7px;
+  height: 13px;
+  background: var(--accent, #5ed2c4);
+  vertical-align: -2px;
+}
+
+:global([data-motion="running"]) .cursor {
+  display: inline-block;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.caption {
+  margin-top: 8px;
+  color: var(--muted, #999);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    animation: none !important;
+    --demo-t: var(--loop) !important;
+  }
+  .cursor {
+    display: none !important;
+  }
+}

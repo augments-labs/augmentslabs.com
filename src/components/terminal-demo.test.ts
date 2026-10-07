@@ -121,29 +121,29 @@ describe("TerminalDemo", () => {
     });
   });
 
-  describe("CSS tests", () => {
+  describe("CSS tests (shared motion rules)", () => {
     it("@property --demo-t is declared", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain("@property --demo-t");
     });
 
     it(".container sets --demo-t: var(--loop)", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain(".container {");
       expect(cssContent).toContain("--demo-t: var(--loop)");
     });
 
     it("idle rule sets --demo-t: 0", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain('[data-motion="idle"]');
       expect(cssContent).toContain("--demo-t: 0");
     });
 
     it("running and paused share one rule that sets animation: tick", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain('[data-motion="running"]');
       expect(cssContent).toContain('[data-motion="paused"]');
@@ -151,14 +151,14 @@ describe("TerminalDemo", () => {
     });
 
     it("paused rule sets animation-play-state: paused", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain('[data-motion="paused"]');
       expect(cssContent).toContain("animation-play-state: paused");
     });
 
     it(".line block holds no animation declaration", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       const lineSection = cssContent.match(/\.line\s*\{[^}]+\}/);
       expect(lineSection).toBeTruthy();
@@ -166,7 +166,7 @@ describe("TerminalDemo", () => {
     });
 
     it("reduced motion block sets animation: none on .container", () => {
-      const cssPath = resolve(basePath, "terminal-demo.module.css");
+      const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain("@media (prefers-reduced-motion: reduce)");
       expect(cssContent).toContain("animation: none");

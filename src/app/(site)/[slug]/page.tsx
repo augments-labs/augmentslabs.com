@@ -4,8 +4,12 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CodeBlock } from "@/components/code-block";
 import { MotionGate } from "@/components/motion-gate";
+import { EditorDemo } from "@/components/editor-demo";
+import { SessionDemo } from "@/components/session-demo";
 import { TerminalDemo } from "@/components/terminal-demo";
-import { getProject, projects } from "@/lib/projects";
+import { tokenizeLines } from "@/lib/highlight";
+import { getProject, projects, type Demo, type Project } from "@/lib/projects";
+import type { BundledLanguage } from "shiki";
 
 export const dynamicParams = false;
 
@@ -24,10 +28,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: project.name, description: project.tagline };
 }
 
+async function renderDemo(project: Project, demo: Demo) {
+  if (demo.surface === "editor") {
+    const rows = await tokenizeLines(
+      demo.lines.map((line) => line.text),
+      // The project language names the grammar; shiki knows it by its
+      // lower-case id (Python → python).
+      project.language.toLowerCase() as BundledLanguage,
+    );
+    return <EditorDemo demo={demo} rows={rows} />;
+  }
+  if (demo.surface === "session") {
+    return <SessionDemo demo={demo} />;
+  }
+  return <TerminalDemo demo={demo} />;
+}
+
 export default async function ProjectWelcomePage({ params }: Props) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  const demo = project.demo ? await renderDemo(project, project.demo) : null;
 
   const header = (
     <>
@@ -66,13 +87,11 @@ export default async function ProjectWelcomePage({ params }: Props) {
       <Breadcrumbs
         items={[{ label: "Home", href: "/" }, { label: project.name, current: true }]}
       />
-      {project.demo ? (
+      {demo ? (
         <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
           <div className="min-w-0">{header}</div>
 
-          <MotionGate className="min-w-0">
-            <TerminalDemo demo={project.demo} />
-          </MotionGate>
+          <MotionGate className="min-w-0">{demo}</MotionGate>
         </div>
       ) : (
         header

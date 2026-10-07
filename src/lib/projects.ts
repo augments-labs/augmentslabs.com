@@ -16,13 +16,36 @@ export type IconName = (typeof ICON_NAMES)[number];
 
 export const DEFAULT_ICON: IconName = "box";
 
+/**
+ * What the demo frame looks like. A terminal shows a command line session,
+ * an editor shows a source file being written, and a session shows a Claude
+ * Code conversation. With none set, the frame is a terminal.
+ */
+export type DemoSurface = "terminal" | "editor" | "session";
+
 export type DemoLine = {
   at: number;
-  kind: "mode" | "prompt" | "tool" | "question" | "result";
+  /**
+   * Terminal: mode, prompt, tool, question, result.
+   * Editor: code.
+   * Session: prompt, skill, text, note.
+   */
+  kind:
+    | "mode"
+    | "prompt"
+    | "tool"
+    | "question"
+    | "result"
+    | "code"
+    | "skill"
+    | "text"
+    | "note";
   text: string;
 };
 
 export type Demo = {
+  surface?: DemoSurface;
+  /** Window title: the command, the file name or the working directory. */
   title: string;
   caption: string;
   alt: string;
