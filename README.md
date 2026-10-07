@@ -1,83 +1,67 @@
 # augmentslabs.com
 
-The Augments Labs website. Static site built with Next.js (App Router) and
-Tailwind CSS. Dark-first, teal-accented, one signature: the augment corner
-from the logo.
+The source of the Augments Labs website. It is a static site built with
+Next.js and Tailwind CSS and deployed on Vercel.
 
-## How it works
+## What the site shows
 
-- **Routes**
-  - `/`: lab homepage (thesis, principles, project cards).
-  - `/<slug>`: project welcome page (tagline, quickstart, highlights, CTAs,
-    and a terminal demo when the project has one).
-  - `/<slug>/docs` + `/<slug>/docs/<page...>`: per-project documentation with
-    sidebar, search (⌘K), right-rail TOC, prev/next, and "Edit this page".
-  - `/docs`: index of all project docs. `/device-preview`: react-device-lab.
-  - Legacy `/docs/<slug>/...` 301-redirects to `/<slug>/docs/...`.
-- **Project data** lives in `src/lib/projects.json` (tagline, quickstart,
-  highlights, repo URL, plus an optional `icon` and `demo`). Adding a
-  project = one JSON entry.
-- **Docs are synced, not written here.** Each project keeps its docs in its
-  own repo under `docs/`. `scripts/sync-docs.mjs` pulls every `docs/**/*.md`
-  (→ `content/docs/<slug>/`) and image (→ `public/synced/<slug>/`) before
-  `next dev` and `next build` (npm pre-hooks). `content/` and `public/synced/`
-  are gitignored and regenerated every run. Sync swaps via a temp dir; on
-  failure (e.g. rate limit) it falls back to the previous snapshot. Set
-  `GITHUB_TOKEN` to raise the API limit. The sync also writes
-  `public/synced/manifest.json`, the docs commit each project was built
-  from, which the docs refresh workflow reads from the live site.
-- **Markdown pipeline** (`src/components/markdown.tsx`): react-markdown
-  `MarkdownAsync` + GFM + Shiki (rehype-pretty-code, dual light/dark) +
-  heading ids/autolinks + rehype-raw for the HTML the docs carry (`<kbd>`,
-  `<picture>`; scripts, styles and iframes are dropped). A `<picture>` with
-  a dark source renders as two images switched by the theme class.
-  Relative `.md` links and images are rewritten onto
-  the site (`src/lib/doc-links.ts`); a redundant `docs/<slug>/<slug>/` repo
-  layout is collapsed.
-- **Search**: Pagefind runs postbuild (`pagefind --site .next/server/app`),
-  indexing only `data-pagefind-body` regions into `public/pagefind/`
-  (gitignored). The client dialog groups results by current project.
-- **Theme**: next-themes, class strategy, default **dark**; tokens in
-  `src/app/globals.css` (`--background/--foreground/--muted/--surface/
-  --border/--accent`).
+The homepage presents the lab and lists its projects. Each project has a
+welcome page with a short description, a quickstart, its highlights and,
+for some projects, a small demo. Each project also has a documentation
+section with a sidebar, a search box, a table of contents and links to the
+previous and next page.
 
-## Develop
+The documentation is not written in this repository. Every project keeps
+its docs in its own repository, in a `docs/` folder. A script downloads
+those folders before the site is built, so the site always shows what the
+projects publish. The downloaded files live in `content/` and
+`public/synced/`, which are ignored by git. Do not edit them by hand. To
+change a page, change it in the project repository.
+
+To add a project to the site, add an entry to `src/lib/projects.json`.
+
+## Working on the site
+
+You need Node.js and npm.
 
 ```bash
 npm install
-npm run dev        # syncs docs first, then starts Next
-npm test           # vitest run (unit tests for the docs logic)
-npm run test:watch # vitest watch mode
-npm run lint
-npm run build      # sync + next build + pagefind index
+npm run dev
 ```
 
-## Branches and deployment
+The first command installs the dependencies. The second downloads the docs
+and starts the site at http://localhost:3000.
 
-- `dev` is the default branch. Every change is a pull request into `dev`.
-- `main` is what Vercel deploys to augmentslabs.com. It moves only through a
-  pull request from `dev`, so a release is one merge.
-- Both branches are protected: pull request required, no force push, linear
-  history, the CI check must pass.
+The download calls the GitHub API, which allows only a few requests per
+hour without a token. If the download fails, set a `GITHUB_TOKEN`
+environment variable with a token that can read public repositories, and
+run the command again. Never commit the token.
 
-## Workflows
+Other commands:
 
-- **CI** (`.github/workflows/ci.yml`): lint, tests and a full build on every
-  pull request and on pushes to `dev` and `main`. The build syncs the docs
-  with the workflow's own token.
-- **Docs refresh** (`.github/workflows/docs-refresh.yml`): the docs come
-  from other repos, so a docs change there does not touch this one. Every
-  hour the workflow compares the manifest the live site serves with the
-  latest docs commit of each project repo. When one differs, it rebuilds
-  once to make sure the new docs render, then calls the Vercel deploy
-  hook stored in the `VERCEL_DEPLOY_HOOK_URL` repository secret. Run it by
-  hand from the Actions tab, or send a `docs-updated` repository dispatch
-  from a project repo, to deploy without waiting for the hour.
-- **Dependabot** (`.github/dependabot.yml`): weekly pull requests into `dev`
-  for the actions and the npm dependencies, the latter grouped into one.
+```bash
+npm test          # run the unit tests
+npm run lint      # check the code
+npm run build     # build the site the way Vercel does
+```
 
-## Conventions
+## How a change reaches the live site
 
-- `AGENTS.md` carries agent-facing guidance; `CLAUDE.md` is a symlink to it.
-- The design of record for the current UI lives in
-  `.sdlc-skills/designs/2026-08-08-augmentslabs-redesign.md`.
+The repository has two long-lived branches. `dev` is the default branch
+and receives every pull request. `main` is the branch Vercel deploys. It
+only changes through a pull request from `dev`, so releasing is one merge.
+Both branches require the CI check to pass.
+
+CI runs lint, the tests and a full build on every pull request and on
+every push to `dev` and `main`.
+
+Because the docs live in other repositories, a docs change there does not
+touch this one. Once an hour, a workflow compares the docs version the
+live site was built from with the latest docs in each project repository.
+When something is new, it builds the site once to make sure the new docs
+render, then asks Vercel to deploy. The Vercel deploy hook is stored in
+the `VERCEL_DEPLOY_HOOK_URL` repository secret. You can also run that
+workflow by hand from the Actions tab.
+
+Dependabot opens a weekly pull request into `dev` when a dependency has a
+newer version.

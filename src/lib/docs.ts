@@ -85,8 +85,7 @@ export interface DocContent {
   /**
    * Path of the matched file relative to content/docs/<slug>/
    * (e.g. "a2a/index.md"). Its dirname is the base for resolving relative
-   * links and images inside the markdown, and its full path feeds the
-   * "Edit this page on GitHub" link.
+   * links and images inside the markdown.
    */
   fileRelPath: string;
 }
@@ -280,21 +279,4 @@ export function extractHeadings(markdown: string): DocHeading[] {
     headings.push({ depth: match[1].length, text, id: slugger.slug(text) });
   }
   return headings;
-}
-
-// ---------------------------------------------------------------------------
-// Repo metadata written by scripts/sync-docs.mjs (drives "Edit this page").
-// ---------------------------------------------------------------------------
-
-export interface RepoMeta {
-  branch: string;
-}
-
-export async function getRepoMeta(slug: string): Promise<RepoMeta | null> {
-  try {
-    const raw = await readFile(path.join(CONTENT_DIR, slug, ".meta.json"), "utf8");
-    return JSON.parse(raw) as RepoMeta;
-  } catch {
-    return null;
-  }
 }
