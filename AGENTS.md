@@ -55,6 +55,14 @@ the docs sync. Never commit it.
 - Titles join with a middle dot (`Page · Project · Augments Labs`);
   `docPageTitle` in `src/lib/docs.ts` skips a project name the doc already
   carries.
+- Raw HTML in docs renders through `rehype-raw` in
+  `src/components/markdown.tsx`; scripts, styles and iframes are dropped.
+  A `<picture>` with a dark `<source>` becomes two images switched by the
+  theme class, since the site theme is a class and not the system setting.
+- The demo clock in `src/components/demo-motion.module.css` animates the
+  registered `--demo-p` (0 to 1) with literal keyframe values and derives
+  `--demo-t` from it. Keep `var()` out of those keyframes: Firefox does not
+  interpolate a registered property through one.
 - Fenced code blocks in docs render through the `pre` override in
   `src/components/markdown.tsx`, which must keep a real `<pre>` element:
   whitespace, the `.prose pre` surface and the copy button all depend on it.

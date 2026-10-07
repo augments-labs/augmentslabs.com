@@ -28,13 +28,17 @@ describe("TerminalDemo", () => {
 
   describe("Markup tests", () => {
     it("figure style holds --loop as plain number without ms", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain('style="--loop:18000"');
       expect(html).not.toContain("18000ms");
     });
 
     it("every line has data-line-kind and style holding --at as plain number", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain('data-line-kind="prompt"');
       expect(html).toContain('data-line-kind="result"');
       expect(html).toContain('data-line-kind="question"');
@@ -44,37 +48,49 @@ describe("TerminalDemo", () => {
     });
 
     it("typing span has data-typing and --chars equal to text length", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
-      expect(html).toContain('data-typing');
-      expect(html).toContain('--chars:12');
-      expect(html).toContain('--chars:26');
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
+      expect(html).toContain("data-typing");
+      expect(html).toContain("--chars:12");
+      expect(html).toContain("--chars:26");
     });
 
     it("rendered HTML holds no --kind", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).not.toContain("--kind");
     });
 
     it("chosen answer in question has data-chosen true", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain('data-chosen="true"');
       expect(html).toContain("› 1. Yes");
     });
 
     it("renders a figure with role img and aria-label", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain('role="img"');
       expect(html).toContain('aria-label="Test alternative text for the demo"');
     });
 
     it("renders a figcaption with the demo caption", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain("<figcaption");
       expect(html).toContain("Test demonstration caption");
     });
 
     it("renders lines in order", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       const testIndex = html.indexOf("test command");
       const outputIndex = html.indexOf("output line");
       const questionIndex = html.indexOf("Do you want to proceed");
@@ -86,7 +102,9 @@ describe("TerminalDemo", () => {
     });
 
     it("escapes HTML entities in text content", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain("&amp;");
       expect(html).toContain("&lt;");
       expect(html).toContain("&gt;");
@@ -94,7 +112,9 @@ describe("TerminalDemo", () => {
     });
 
     it("renders question lines as bordered blocks, not box-drawing characters", () => {
-      const html = renderToString(createElement(TerminalDemo, { demo: mockDemo }));
+      const html = renderToString(
+        createElement(TerminalDemo, { demo: mockDemo }),
+      );
       expect(html).toContain("Do you want to proceed");
       expect(html).not.toContain("╭");
       expect(html).not.toContain("╮");
@@ -109,12 +129,10 @@ describe("TerminalDemo", () => {
         caption: "Test caption",
         alt: "Test alt",
         loopMs: 5000,
-        lines: [
-          { at: 300, kind: "tool", text: "  read   src/lib/docs.ts" },
-        ],
+        lines: [{ at: 300, kind: "tool", text: "  read   src/lib/docs.ts" }],
       };
       const html = renderToString(
-        createElement(TerminalDemo, { demo: demoWithTool })
+        createElement(TerminalDemo, { demo: demoWithTool }),
       );
       expect(html).toContain('data-line-kind="tool"');
       expect(html).toContain("  read   src/lib/docs.ts");
@@ -122,24 +140,40 @@ describe("TerminalDemo", () => {
   });
 
   describe("CSS tests (shared motion rules)", () => {
-    it("@property --demo-t is declared", () => {
+    it("@property --demo-p is the registered progress, 0 to 1", () => {
       const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
-      expect(cssContent).toContain("@property --demo-t");
+      expect(cssContent).toContain("@property --demo-p");
+      expect(cssContent).toContain('syntax: "<number>"');
     });
 
-    it(".container sets --demo-t: var(--loop)", () => {
+    it("the keyframes hold literal values, since Firefox does not interpolate var() there", () => {
+      const cssPath = resolve(basePath, "demo-motion.module.css");
+      const cssContent = readFileSync(cssPath, "utf-8");
+      const keyframes = cssContent.match(
+        /@keyframes tick \{[^}]*\}[^}]*\}/,
+      )?.[0];
+      expect(keyframes).toBeDefined();
+      expect(keyframes).not.toContain("var(");
+      expect(keyframes).toContain("--demo-p: 0");
+      expect(keyframes).toContain("--demo-p: 1");
+    });
+
+    it(".container derives the clock from the progress and the loop", () => {
       const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain(".container {");
-      expect(cssContent).toContain("--demo-t: var(--loop)");
+      expect(cssContent).toContain("--demo-p: 1");
+      expect(cssContent).toContain(
+        "--demo-t: calc(var(--demo-p) * var(--loop))",
+      );
     });
 
-    it("idle rule sets --demo-t: 0", () => {
+    it("idle rule sets --demo-p: 0", () => {
       const cssPath = resolve(basePath, "demo-motion.module.css");
       const cssContent = readFileSync(cssPath, "utf-8");
       expect(cssContent).toContain('[data-motion="idle"]');
-      expect(cssContent).toContain("--demo-t: 0");
+      expect(cssContent).toContain("--demo-p: 0");
     });
 
     it("running and paused share one rule that sets animation: tick", () => {
@@ -231,7 +265,7 @@ describe("TerminalDemo", () => {
         ],
       };
       const html = renderToString(
-        createElement(TerminalDemo, { demo: demoWithIndent })
+        createElement(TerminalDemo, { demo: demoWithIndent }),
       );
       expect(html).toContain("Write file");
       expect(html).toContain("  hello.txt");

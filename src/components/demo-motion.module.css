@@ -8,18 +8,23 @@
   margin: 0;
 }
 
-@property --demo-t {
+/* --demo-p is the loop progress, 0 to 1, and the only thing the keyframes
+   touch. --demo-t is the clock in milliseconds the lines read. The keyframes
+   hold literal numbers on purpose: Firefox does not interpolate a registered
+   property whose keyframe value is a var(), it jumps halfway through. */
+@property --demo-p {
   syntax: "<number>";
   inherits: true;
-  initial-value: 0;
+  initial-value: 1;
 }
 
 .container {
-  --demo-t: var(--loop);
+  --demo-p: 1;
+  --demo-t: calc(var(--demo-p) * var(--loop));
 }
 
 :global([data-motion="idle"]) .container {
-  --demo-t: 0;
+  --demo-p: 0;
 }
 
 :global([data-motion="running"]) .container,
@@ -32,8 +37,8 @@
 }
 
 @keyframes tick {
-  from { --demo-t: 0; }
-  to { --demo-t: var(--loop); }
+  from { --demo-p: 0; }
+  to { --demo-p: 1; }
 }
 
 .line {
@@ -86,7 +91,7 @@
 @media (prefers-reduced-motion: reduce) {
   .container {
     animation: none !important;
-    --demo-t: var(--loop) !important;
+    --demo-p: 1 !important;
   }
   .cursor {
     display: none !important;
