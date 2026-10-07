@@ -28,7 +28,10 @@ from the logo.
   from, which the docs refresh workflow reads from the live site.
 - **Markdown pipeline** (`src/components/markdown.tsx`): react-markdown
   `MarkdownAsync` + GFM + Shiki (rehype-pretty-code, dual light/dark) +
-  heading ids/autolinks. Relative `.md` links and images are rewritten onto
+  heading ids/autolinks + rehype-raw for the HTML the docs carry (`<kbd>`,
+  `<picture>`; scripts, styles and iframes are dropped). A `<picture>` with
+  a dark source renders as two images switched by the theme class.
+  Relative `.md` links and images are rewritten onto
   the site (`src/lib/doc-links.ts`); a redundant `docs/<slug>/<slug>/` repo
   layout is collapsed.
 - **Search**: Pagefind runs postbuild (`pagefind --site .next/server/app`),
