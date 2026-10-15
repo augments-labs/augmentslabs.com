@@ -56,5 +56,7 @@ histories. After it is merged, `main` contains `dev`'s commits again.
 ## Docs changes
 
 Project documentation comes from the project repositories and does not
-need a release. An hourly workflow notices new docs and redeploys the site
-on its own. To redeploy sooner, run "Docs refresh" from the Actions tab.
+need a release here. The site publishes each project's default branch
+(`main`), so new docs go live after that project releases, once a daily
+workflow notices them and redeploys the site. To redeploy sooner, run
+"Docs refresh" from the Actions tab.
