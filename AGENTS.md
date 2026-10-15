@@ -24,7 +24,7 @@ the docs sync. Never commit it.
   `main` and the next release conflicts. Both branches are protected and
   require the "Lint, test and build" check. `RELEASING.md` has the steps.
 - Workflows in `.github/workflows/`: `ci.yml` runs lint, tests and the build
-  on pull requests and pushes. `docs-refresh.yml` runs hourly, compares the
+  on pull requests and pushes. `docs-refresh.yml` runs daily, compares the
   manifest the live site serves (`/synced/manifest.json`) with the project
   repos through `scripts/docs-changed.mjs`, and calls the Vercel deploy hook
   in the `VERCEL_DEPLOY_HOOK_URL` secret when the docs moved. GitHub API

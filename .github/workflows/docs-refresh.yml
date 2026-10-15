@@ -1,9 +1,10 @@
 # Keeps the docs pages in step with the project repos.
 #
-# The site is static: docs are fetched at build time. This workflow checks
-# every hour whether any project's docs/ folder has a newer commit than the
-# one the live site was built from (public/synced/manifest.json) and, only
-# then, asks Vercel to rebuild through a deploy hook.
+# The site is static: docs are fetched at build time from each project's
+# default branch. This workflow checks once a day whether any project's
+# docs/ folder has a newer commit than the one the live site was built from
+# (public/synced/manifest.json) and, only then, asks Vercel to rebuild
+# through a deploy hook.
 #
 # A manual run or a `docs-updated` repository_dispatch skips the comparison
 # and always triggers a deploy.
@@ -12,7 +13,8 @@ name: Docs refresh
 
 on:
   schedule:
-    - cron: "17 * * * *"
+    # 06:17 UTC. Off the hour, when GitHub drops the fewest scheduled runs.
+    - cron: "17 6 * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [docs-updated]
