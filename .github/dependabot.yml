@@ -13,3 +13,13 @@ updates:
     groups:
       dependencies:
         patterns: ["*"]
+    ignore:
+      # On Vercel, Next 16.4 writes prerendered pages under
+      # .next/server/route-cache, so pagefind finds no HTML in
+      # .next/server/app and the build fails. Lift this once the search
+      # index reads the new location.
+      - dependency-name: next
+        versions: [">=16.4.0"]
+      # typescript-eslint does not support TypeScript 7 yet.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
